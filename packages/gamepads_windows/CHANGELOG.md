@@ -1,3 +1,7 @@
+## 0.1.4+2 (MimicX fork — kunichiko)
+
+ - **PERF**: Throttle the winmm polling loop with `Sleep(8)` (~125Hz). The upstream 0.1.4 `read_gamepad` loop had no sleep, so it spun as fast as the CPU allowed and pinned one logical core (~8% CPU on a 12-thread machine) for the whole app lifetime, regardless of the visible screen. Upstream fixed the same problem in the 0.3.0 WinRT rewrite, which we deliberately do not adopt because it link-loads `gameinput.dll` and breaks app launch on Windows 10.
+
 ## 0.1.4+1
 
  - **FIX**: Use `std::optional` for return from `GamepadListenerProc` ([#58](https://github.com/flame-engine/gamepads/issues/58)). ([fbf52fd2](https://github.com/flame-engine/gamepads/commit/fbf52fd281cec345b110c8a5c63053cafd4571cd))

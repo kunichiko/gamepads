@@ -80,6 +80,14 @@ void Gamepads::read_gamepad(Gamepad* gamepad) {
   std::cout << "Listening to gamepad " << joy_id << std::endl;
 
   while (gamepad->alive) {
+    // Throttle the polling loop. The upstream 0.1.4 loop had no sleep, so it
+    // spun as fast as the CPU allowed and pinned one logical core (~8% CPU on
+    // a 12-thread machine) for the whole lifetime of the app, regardless of
+    // which screen was shown. 8ms == ~125Hz polling, far more than enough for
+    // gamepad input latency, and drops the idle cost to ~0. (Upstream fixed the
+    // same issue in the WinRT rewrite 0.3.0+1, which we cannot adopt because it
+    // link-loads gameinput.dll and breaks app launch on Windows 10.)
+    Sleep(8);
     JOYINFOEX previous_state = state;
     MMRESULT result = joyGetPosEx(joy_id, &state);
     if (result == JOYERR_NOERROR) {
