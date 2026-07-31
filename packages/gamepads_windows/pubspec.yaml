@@ -1,5 +1,11 @@
 name: gamepads_windows
-resolution: workspace
+# NOTE (MimicX fork): upstream declares `resolution: workspace` here. When this
+# package is consumed as a git+path dependency, that makes pub resolve against
+# the whole monorepo workspace at this commit, dragging OLD sibling packages
+# (gamepads_platform_interface, etc.) and cascading ~14 transitive downgrades
+# into the host app. Removing it makes this a self-contained package so
+# gamepads_platform_interface resolves normally from pub.dev, exactly like the
+# published 0.1.4+1 does. This is the only pubspec change vs upstream.
 description: Windows implementation of gamepads, a Flutter plugin to handle gamepad input across multiple platforms.
 version: 0.1.4+2
 homepage: https://github.com/flame-engine/gamepads
