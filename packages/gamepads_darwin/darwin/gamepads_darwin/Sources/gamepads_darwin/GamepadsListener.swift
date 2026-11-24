@@ -18,6 +18,18 @@ class GamepadsListener {
     private var nextId = 0
 
     init() {
+        // フロントモストでなくてもコントローラー入力を受け取る (macOS のみ)。
+        //
+        // macOS Big Sur 11.3 以降、既定は NO で、アプリが最前面でない間は
+        // ゲームパッドの入力が一切配送されない (GCController.h の
+        // shouldMonitorBackgroundEvents 参照)。別アプリの画面を見ながら
+        // ゲームパッドで操作する用途では受け取れないと成立しないため YES にする。
+        // iOS / tvOS には存在しない API なので macOS ビルドに限定する。
+        #if os(macOS)
+        if #available(macOS 11.3, *) {
+            GCController.shouldMonitorBackgroundEvents = true
+        }
+        #endif
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(joystickDidConnect),
